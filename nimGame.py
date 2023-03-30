@@ -2,6 +2,16 @@
 import os
 import random
 ############################### MY CODE ###############################
+def getChoice(toChoose):
+    # Case 1
+    # There are more than 2 choices
+    if len(toChoose) > 1:
+        # choose randomly between two rows
+        return toChoose[random.randint(0,len(toChoose))]
+    # Case 2
+    # There are only two choices
+    else:
+        return toChoose[0]
 def check4WinRound(board ,diag ,n):
     # check rows
     rows = []
@@ -14,12 +24,12 @@ def check4WinRound(board ,diag ,n):
                 c+=1
         rows.append(c)
     candidate_rows = []
-    for i in range(n+1):
-        if i<n:
-            if rows[i]==rows[i+1]:
+    for i in range(n):
+        for j in range(i+1,n):
+            if rows[i]==rows[j]:
                 candidate_rows.append((i,i+1))
-        else:
-            pass
+            else:
+                pass
     # check columns
     cols = []
     for i in range(n):
@@ -31,24 +41,34 @@ def check4WinRound(board ,diag ,n):
                 c+=1
         cols.append(c)
     candidate_cols = []
-    for i in range(n+1):
-        if i<n:
-            if cols[i]==cols[i+1]:
+    for i in range(n):
+        for j in range(i+1,n):
+            if cols[i]==cols[j]:
                 candidate_cols.append((i,i+1))
-        else:
-            pass
+            else:
+                pass
     # Case 1
     # There are both rows and cols
     if len(candidate_cols) > 0 and len(candidate_rows) > 0:
+        # choose randomly between rows and cols
+        if random.randint(0,1) == 0:#choose rows
+            choice = getChoice(candidate_rows)
+        else:#cols are chosen
+            choice = getChoice(candidate_cols)
     # Case 2
     # There are only rows
     elif len(candidate_cols) > 0 :
+        choice = getChoice(candidate_cols)
     # Case 3
     # There are only cols
     elif len(candidate_rows) > 0 :
+        choice = getChoice(candidate_rows)
     # Case 4
     # There are neither cols nor rows
     else:
+        ''' ? '''
+        # epilogh anamesa se random , first-fit , copycat
+        pass
 def discardChoice(chosenNumbers,chosen):
     if input("Do you want to clear? \n(y/n)")=='y' :
         chosenNumbers = []
