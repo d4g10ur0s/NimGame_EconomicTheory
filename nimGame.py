@@ -2,6 +2,53 @@
 import os
 import random
 ############################### MY CODE ###############################
+def check4WinRound(board ,diag ,n):
+    # check rows
+    rows = []
+    for i in range(n):
+        c=0
+        for j in range(n):
+            if table[i+1+j] == 'G' or table[i+1+j] == 'R':
+                pass
+            else:
+                c+=1
+        rows.append(c)
+    candidate_rows = []
+    for i in range(n+1):
+        if i<n:
+            if rows[i]==rows[i+1]:
+                candidate_rows.append((i,i+1))
+        else:
+            pass
+    # check columns
+    cols = []
+    for i in range(n):
+        c=0
+        for j in range(n):
+            if table[i+1+j*n] == 'G' or table[i-1+j*n] == 'R':
+                pass
+            else:
+                c+=1
+        cols.append(c)
+    candidate_cols = []
+    for i in range(n+1):
+        if i<n:
+            if cols[i]==cols[i+1]:
+                candidate_cols.append((i,i+1))
+        else:
+            pass
+    # Case 1
+    # There are both rows and cols
+    if len(candidate_cols) > 0 and len(candidate_rows) > 0:
+    # Case 2
+    # There are only rows
+    elif len(candidate_cols) > 0 :
+    # Case 3
+    # There are only cols
+    elif len(candidate_rows) > 0 :
+    # Case 4
+    # There are neither cols nor rows
+    else:
 def discardChoice(chosenNumbers,chosen):
     if input("Do you want to clear? \n(y/n)")=='y' :
         chosenNumbers = []
@@ -10,7 +57,6 @@ def discardChoice(chosenNumbers,chosen):
             chosenNumbers = [chosenNumbers[0]]
         else:
             chosenNumbers = chosenNumbers[:chosen]
-
 def getDiag(table,dim):
     diag = []
     for i in range(dim):
