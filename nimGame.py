@@ -2,6 +2,61 @@
 import os
 import random
 ############################### MY CODE ###############################
+def getComputerMove_random(board , dim , diag , choice=None):
+    cell_choice = []
+    # Case 1
+    # There is no winning move
+    if choice==None:
+        while 1 :
+            cell_choice.append(random.randint(0,dim * dim))
+            # check if valid
+            if table[cell_choice[0]] == 'G' or table[cell_choice[0]] == 'R':
+                cell_choice = []# not valid
+            else:
+                break# valid
+        #end while
+        # Case 1
+        # chosen cell in diag
+        if cell_choice[0] in diag :
+            return cell_choice
+        # Case 2
+        # rows
+    elif random.randint(0,1)==0:
+            # Case 1
+            # goRight
+            if random.randint(0,1)==0:
+                if cell_choice[0]%dim == 0:# eimai sto teleutaio cell
+                    # gia na paw deksia , pairnw to 1o cell apo thn allh ean einai efikto
+                    cell_choice.append(board[cell_choice[0]-dim+1])
+                else:# mporei na sumvei
+                    cell_choice.append(board[cell_choice[0]+1])
+            # Case 2
+            # goLeft
+            else :
+                if cell_choice[0]%dim == 1:# eimai sto prwto cell
+                    # gia na paw deksia , pairnw to 1o cell apo thn allh ean einai efikto
+                    cell_choice.append(board[cell_choice[0]+dim-1])
+                else:# mporei na sumvei
+                    cell_choice.append(board[cell_choice[0]-1])
+        # Case 3
+        # columns
+        else :
+            # Case 1
+            # goUp
+            if random.randint(0,1)==0:
+                if cell_choice[0]%dim == 0:# eimai sto teleutaio cell
+                    # gia na paw deksia , pairnw to 1o cell apo thn allh ean einai efikto
+                    cell_choice.append(board[cell_choice[0]-dim+1])
+                else:# mporei na sumvei
+                    cell_choice.append(board[cell_choice[0]+1])
+            # Case 2
+            # goDown
+            else :
+                if cell_choice[0]%dim == 1:# eimai sto prwto cell
+                    # gia na paw deksia , pairnw to 1o cell apo thn allh ean einai efikto
+                    cell_choice.append(board[cell_choice[0]+dim-1])
+                else:# mporei na sumvei
+                    cell_choice.append(board[cell_choice[0]-1])
 def getChoice(toChoose):
     # Case 1
     # There are more than 2 choices
@@ -69,6 +124,7 @@ def check4WinRound(board ,diag ,n):
         ''' ? '''
         # epilogh anamesa se random , first-fit , copycat
         pass
+
 def discardChoice(chosenNumbers,chosen):
     if input("Do you want to clear? \n(y/n)")=='y' :
         chosenNumbers = []
@@ -83,9 +139,6 @@ def getDiag(table,dim):
         diag.append(table[(i+dim*i)+1])
     return diag
 def playerInput(table, color, dim, diag):
-    '''
-    Den exw valei thn periptwsh na exei epileksei hdh epilegmeno
-    '''
     submit = False
     row = False
     chosen = 0
@@ -95,16 +148,18 @@ def playerInput(table, color, dim, diag):
         try :
             chosenNumbers.append(int(input("Choose a valid Cell :")))
             chosen=len(chosenNumbers)
+            if chosenNumbers[chosen-1] > dim*dim or chosenNumbers[chosen-1] == 'G' or chosenNumbers[chosen-1] == 'R' or chosenNumbers[chosen-1] < 1:
+                raise ValueError
             if chosenNumbers[chosen-1] in diag :# chosen cell is in diag
                 if len(chosenNumbers)==1:# 1st cell is in diag
-                    print("You have chosen a cell in the diag. \nYou can\'t choose another cell. \n")
+                    print("You have chosen a cell in the diag. \nYou can\'t choose another cell.")
                     if input("Do you want to proceed? \n(y/n)")=='y' :
                         submit = True
                     else:# player does not submit
                         submit = False
                         chosenNumbers = []
                 else:# len(chosenNumbers) > 1
-                    print("You have chosen a cell in the diag. \nThis is not a valid choice. \n")
+                    print("You have chosen a cell in the diag. \nThis is not a valid choice.")
                     discardChoice(chosenNumbers,chosen)
             else:
                 if chosen > 1:
@@ -125,7 +180,7 @@ def playerInput(table, color, dim, diag):
                 else:
                     pass
         except ValueError :
-            print("Choose a valid integer number")
+            print("Choose a valid integer number.\nChoose a non-chosen cell.")
         finally :
             chosenNumbers = []
     #endwhile
