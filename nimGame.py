@@ -1,6 +1,9 @@
 # 2-D NIM Game
 import os
 import random
+# 2-D NIM Game
+import os
+import random
 ############################### MY CODE ###############################
 def getComputerMove_random(board , dim , diag , choice=None):
     cell_choice = []
@@ -20,43 +23,65 @@ def getComputerMove_random(board , dim , diag , choice=None):
         if cell_choice[0] in diag :
             return cell_choice
         # Case 2
-        # rows
-    elif random.randint(0,1)==0:
-            # Case 1
-            # goRight
+        # do more choices
+    elif random.randint(0,1)==0 and len(cell_choice)<3:
+            # Choose by row
             if random.randint(0,1)==0:
-                if cell_choice[0]%dim == 0:# eimai sto teleutaio cell
-                    # gia na paw deksia , pairnw to 1o cell apo thn allh ean einai efikto
-                    cell_choice.append(board[cell_choice[0]-dim+1])
-                else:# mporei na sumvei
-                    cell_choice.append(board[cell_choice[0]+1])
-            # Case 2
-            # goLeft
+                while random.randint(0,1)==1:#random number of choices
+                    # goRight
+                    if random.randint(0,1)==0:
+                        if cell_choice[0]%dim == 0:# eimai sto teleutaio cell apo deksia
+                            # den pickarei
+                            pass
+                        elif len(cell_choice) == 2 :# to 3o keli
+                            #pickarei vasei tu megalyteroy
+                            if cell_choice[1] > cell_choice[0] not(cell_choice[1]%dim==0):
+                                cell_choice.append(cell_choice[1]+1)
+                            else:
+                                cell_choice.append(cell_choice[0]+1)
+                        else:# to 2o keli
+                            cell_choice.append(cell_choice[0]+1)
+                    # goLeft
+                    else:
+                        if cell_choice[0]%dim == 1:# eimai sto prwto cell apo aristera
+                            # den pickarei
+                            pass
+                        elif len(cell_choice) == 2 :# to 3o keli
+                            #pickarei vasei tu mikroteru
+                            if cell_choice[0] > cell_choice[1] and not(cell_choice[1]%dim==1):
+                                cell_choice.append(cell_choice[1]-1)
+                            else:
+                                cell_choice.append(cell_choice[0]-1)
+                        else:# to 2o keli
+                            cell_choice.append(cell_choice[0]-1)
+                #end while
+                return cell_choice
+            # Choose by column
             else :
-                if cell_choice[0]%dim == 1:# eimai sto prwto cell
-                    # gia na paw deksia , pairnw to 1o cell apo thn allh ean einai efikto
-                    cell_choice.append(board[cell_choice[0]+dim-1])
-                else:# mporei na sumvei
-                    cell_choice.append(board[cell_choice[0]-1])
-        # Case 3
-        # columns
-        else :
-            # Case 1
-            # goUp
-            if random.randint(0,1)==0:
-                if cell_choice[0]%dim == 0:# eimai sto teleutaio cell
-                    # gia na paw deksia , pairnw to 1o cell apo thn allh ean einai efikto
-                    cell_choice.append(board[cell_choice[0]-dim+1])
-                else:# mporei na sumvei
-                    cell_choice.append(board[cell_choice[0]+1])
-            # Case 2
-            # goDown
+                    if cell_choice[0]%dim == 1:# eimai sto prwto cell
+                        # gia na paw deksia , pairnw to 1o cell apo thn allh ean einai efikto
+                        cell_choice.append(board[cell_choice[0]+dim-1])
+                    else:# mporei na sumvei
+                        cell_choice.append(board[cell_choice[0]-1])
+            # Case 3
+            # columns
             else :
-                if cell_choice[0]%dim == 1:# eimai sto prwto cell
-                    # gia na paw deksia , pairnw to 1o cell apo thn allh ean einai efikto
-                    cell_choice.append(board[cell_choice[0]+dim-1])
-                else:# mporei na sumvei
-                    cell_choice.append(board[cell_choice[0]-1])
+                # Case 1
+                # goUp
+                if random.randint(0,1)==0:
+                    if cell_choice[0]%dim == 0:# eimai sto teleutaio cell
+                        # gia na paw deksia , pairnw to 1o cell apo thn allh ean einai efikto
+                        cell_choice.append(board[cell_choice[0]-dim+1])
+                    else:# mporei na sumvei
+                        cell_choice.append(board[cell_choice[0]+1])
+                # Case 2
+                # goDown
+                else :
+                    if cell_choice[0]%dim == 1:# eimai sto prwto cell
+                        # gia na paw deksia , pairnw to 1o cell apo thn allh ean einai efikto
+                        cell_choice.append(board[cell_choice[0]+dim-1])
+                    else:# mporei na sumvei
+                        cell_choice.append(board[cell_choice[0]-1])
 def getChoice(toChoose):
     # Case 1
     # There are more than 2 choices
@@ -188,6 +213,7 @@ def playerInput(table, color, dim, diag):
     for i in chosenNumbers:
         table[i] = color
 
+############################### MY CODE ###############################
 ############################### FG COLOR DEFINITIONS ###############################
 class bcolors:
     # pure colors...
@@ -352,6 +378,11 @@ def playAgain():
 def isBoardFull(board,N):
         return board[0] == N*N
 
+def getRowAndColumn(move,N):
+        moveRow         = 1 + (move - 1) // N
+        moveColumn      = 1 + (move - 1) % N
+        return(moveRow,moveColumn)
+
 ######### MAIN PROGRAM BEGINS #########
 screen_clear()
 
@@ -359,9 +390,9 @@ print(bcolors.HEADER + """
 ---------------------------------------------------------------------
                      CEID NE509 / LAB-1
 ---------------------------------------------------------------------
-STUDENT NAME:           < Alexios Ntavlouros >
-STUDENT AM:             < 1059653 >
-JOINT WORK WITH:        < - >
+STUDENT NAME:           < provide your name here >
+STUDENT AM:             < provide your AM here >
+JOINT WORK WITH:        < provide your partner's name and AM here >
 ---------------------------------------------------------------------
 """ + bcolors.ENDC)
 
@@ -375,7 +406,7 @@ print(bcolors.HEADER + """
     1.      A human PLAYER plays against the COMPUTER.
     2.      The starting position is an empty NxN board.
     3.      One player (the green) writes G, the other player
-                (the red) writes R, in empty cells.
+            (the red) writes R, in empty cells.
 """ + bcolors.ENDC )
 
 input("Press ENTER to continue...")
@@ -431,10 +462,10 @@ while playNewGameFlag:
 
         if not startNewGame():
                 break
+
         N = getBoardSize()
 
         nimBoard = initializeBoard(N)
-        diag = getDiag(nimBoard,N)
 
         playerLetter, computerLetter = inputPlayerLetter()
 
@@ -459,6 +490,4 @@ while playNewGameFlag:
             else:# player turn
                 turn='computer'
                 input("b")
-
-
 ######### MAIN PROGRAM ENDS #########
