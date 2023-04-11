@@ -24,10 +24,10 @@ def getComputerMove_random(board , dim , diag , choice=None):
             return cell_choice
         # Case 2
         # do more choices
-    elif random.randint(0,1)==0 and len(cell_choice)<3:
+    elif random.randint(0,1)==0:
             # Choose by row
             if random.randint(0,1)==0:
-                while random.randint(0,1)==1:#random number of choices
+                while random.randint(0,1)==1 and len(cell_choice)<3:#random number of choices
                     # goRight
                     if random.randint(0,1)==0:
                         if cell_choice[0]%dim == 0:# eimai sto teleutaio cell apo deksia
@@ -58,30 +58,36 @@ def getComputerMove_random(board , dim , diag , choice=None):
                 return cell_choice
             # Choose by column
             else :
-                    if cell_choice[0]%dim == 1:# eimai sto prwto cell
-                        # gia na paw deksia , pairnw to 1o cell apo thn allh ean einai efikto
-                        cell_choice.append(board[cell_choice[0]+dim-1])
-                    else:# mporei na sumvei
-                        cell_choice.append(board[cell_choice[0]-1])
-            # Case 3
-            # columns
-            else :
-                # Case 1
-                # goUp
-                if random.randint(0,1)==0:
-                    if cell_choice[0]%dim == 0:# eimai sto teleutaio cell
-                        # gia na paw deksia , pairnw to 1o cell apo thn allh ean einai efikto
-                        cell_choice.append(board[cell_choice[0]-dim+1])
-                    else:# mporei na sumvei
-                        cell_choice.append(board[cell_choice[0]+1])
-                # Case 2
-                # goDown
-                else :
-                    if cell_choice[0]%dim == 1:# eimai sto prwto cell
-                        # gia na paw deksia , pairnw to 1o cell apo thn allh ean einai efikto
-                        cell_choice.append(board[cell_choice[0]+dim-1])
-                    else:# mporei na sumvei
-                        cell_choice.append(board[cell_choice[0]-1])
+                while random.randint(0,1)==1 and len(cell_choice)<3:#random number of choices
+                    # goDown
+                    if random.randint(0,1)==0:
+                        if cell_choice[0]-dim < 0:# eimai sto teleutaio cell apo panw
+                            # den pickarei
+                            pass
+                        elif len(cell_choice) == 2 :# to 3o keli
+                            #pickarei vasei tu megalyteroy
+                            if cell_choice[1] > cell_choice[0] not(cell_choice[1]-dim<0):
+                                cell_choice.append(cell_choice[1]+dim)
+                            else:
+                                cell_choice.append(cell_choice[0]+dim)
+                        else:# to 2o keli
+                            cell_choice.append(cell_choice[0]+dim)
+                    # goUp
+                    else:
+                        if cell_choice[0]-dim*(dim-1) > 0:# eimai sto prwto cell apo panw
+                            # den pickarei
+                            pass
+                        elif len(cell_choice) == 2 :# to 3o keli
+                            #pickarei vasei tu mikroteru
+                            if cell_choice[0] > cell_choice[1] and not(cell_choice[1]-dim*(dim-1)>0):
+                                cell_choice.append(cell_choice[1]-dim)
+                            else:
+                                cell_choice.append(cell_choice[0]-dim)
+                        else:# to 2o keli
+                            cell_choice.append(cell_choice[0]-dim)
+                #end while
+                return cell_choice
+
 def getChoice(toChoose):
     # Case 1
     # There are more than 2 choices
