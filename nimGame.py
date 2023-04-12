@@ -5,6 +5,34 @@ import random
 import os
 import random
 ############################### MY CODE ###############################
+def getComputerMove_copycat(board , opponentMove ,dim , diag , choice=None):
+    cell_choice = []
+    if len(opponentMove)==0 :# it is possible that choice is in diag
+        if opponentMove[0] in diag :
+            #N-k +1 --> opponentMove - dim - 1
+            nextMove = None
+            i=0
+            while i < dim:
+                if opponentMove[0]==diag[i] :
+                    nextMove = diag[len(diag)-(i+1)]# N - positionInDiag
+                    # check if valid
+                    if table[nextMove] == 'G' or table[nextMove] == 'R':
+                        nextMove = None# not valid
+                    break
+                i+=1
+            #endwhile
+            # Case 1 : nextMove is not Valid
+            if nextMove==None:
+                if random.randint(0,1)==0:
+                    #go first fit
+                    return getComputerMove_firstfit(board , dim , diag , choice=None, max=len(opponentMove))
+                else:
+                    #go randomly
+                    return getComputerMove_random(board , dim , diag , choice=None, max=len(opponentMove))
+            # Case 2 : nextMove is valid
+            else:
+                return [nextMove]
+
 # first fit moves
 getComputerMove_firstfit(board , dim , diag , choice=None, max=None):
     cell_choice = []
