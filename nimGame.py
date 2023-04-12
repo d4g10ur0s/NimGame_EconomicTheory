@@ -5,10 +5,115 @@ import random
 import os
 import random
 ############################### MY CODE ###############################
-def getComputerMove_random(board , dim , diag , choice=None):
+# first fit moves
+getComputerMove_firstfit(board , dim , diag , choice=None, max=None):
+    cell_choice = []
+    # 8a koitaksei kata sthles h kata grammes ?
+    # by row
+    if random.randint(0,1)==0:
+        i=1
+        while i < dim * dim:# choose the first cell
+            cell_choice.append(i)
+            # check if valid
+            if table[cell_choice[0]] == 'G' or table[cell_choice[0]] == 'R':
+                cell_choice = []# not valid
+                i+=1
+            else:
+                break# valid
+        #endwhile
+    # by column
+    else:
+        i=1
+        while i<=dim:
+            j=0
+            while j < dim:
+                cell_choice.append(i+j*dim)
+                # check if valid
+                if table[cell_choice[0]] == 'G' or table[cell_choice[0]] == 'R':
+                    cell_choice = []# not valid
+                    j+=1
+                else:
+                    break# valid
+            #endwhile j
+            if len(cell_choice) > 0:
+                break
+            else:
+                i+=1
+        #endwhile i
+    # First Fit Choice in chosen cell
+    # Case 1 : chosen cell in diag
+    if cell_choice[0] in diag :
+        return cell_choice
+    # Case 2 : chosen cell not in diag , search by rows or columns
+    elif random.randint(0,1)==0:# do more choices
+        # Choose by row
+        if random.randint(0,1)==0:
+            while random.randint(0,1)==1 and len(cell_choice)<3:#random number of choices
+                # goRight
+                if random.randint(0,1)==0:
+                    if cell_choice[0]%dim == 0:# eimai sto teleutaio cell apo deksia
+                        # den pickarei
+                        pass
+                    elif len(cell_choice) == 2 :# to 3o keli
+                        #pickarei vasei tu megalyteroy
+                        if cell_choice[1] > cell_choice[0] not(cell_choice[1]%dim==0):
+                            cell_choice.append(cell_choice[1]+1)
+                        else:
+                            cell_choice.append(cell_choice[0]+1)
+                    else:# to 2o keli
+                        cell_choice.append(cell_choice[0]+1)
+                # goLeft
+                else:
+                    if cell_choice[0]%dim == 1:# eimai sto prwto cell apo aristera
+                        # den pickarei
+                        pass
+                    elif len(cell_choice) == 2 :# to 3o keli
+                        #pickarei vasei tu mikroteru
+                        if cell_choice[0] > cell_choice[1] and not(cell_choice[1]%dim==1):
+                            cell_choice.append(cell_choice[1]-1)
+                        else:
+                            cell_choice.append(cell_choice[0]-1)
+                    else:# to 2o keli
+                        cell_choice.append(cell_choice[0]-1)
+            #end while
+            return cell_choice
+        # Choose by column
+        else :
+            while random.randint(0,1)==1 and len(cell_choice)<3:#random number of choices
+                # goDown
+                if random.randint(0,1)==0:
+                    if cell_choice[0]-dim < 0:# eimai sto teleutaio cell apo panw
+                        # den pickarei
+                        pass
+                    elif len(cell_choice) == 2 :# to 3o keli
+                        #pickarei vasei tu megalyteroy
+                        if cell_choice[1] > cell_choice[0] not(cell_choice[1]-dim<0):
+                            cell_choice.append(cell_choice[1]+dim)
+                        else:
+                            cell_choice.append(cell_choice[0]+dim)
+                    else:# to 2o keli
+                        cell_choice.append(cell_choice[0]+dim)
+                # goUp
+                else:
+                    if cell_choice[0]-dim*(dim-1) > 0:# eimai sto prwto cell apo panw
+                        # den pickarei
+                        pass
+                    elif len(cell_choice) == 2 :# to 3o keli
+                        #pickarei vasei tu mikroteru
+                        if cell_choice[0] > cell_choice[1] and not(cell_choice[1]-dim*(dim-1)>0):
+                            cell_choice.append(cell_choice[1]-dim)
+                        else:
+                            cell_choice.append(cell_choice[0]-dim)
+                    else:# to 2o keli
+                        cell_choice.append(cell_choice[0]-dim)
+            #end while
+            return cell_choice
+
+# random moves
+def getComputerMove_random(board , dim , diag , choice=None, max=None):
     cell_choice = []
     # Case 1
-    # There is no winning move
+    # There is no winning move ???
     if choice==None:
         while 1 :
             cell_choice.append(random.randint(0,dim * dim))
@@ -495,5 +600,10 @@ while playNewGameFlag:
                 input("a")
             else:# player turn
                 turn='computer'
-                input("b")
+                if computerStrategy == "random":
+                    move = getComputerMove_random(nimBoard,N,getDiag(nimBoard,N))
+                elif computerStrategy == "first free":
+                    pass
+                else:
+                    pass
 ######### MAIN PROGRAM ENDS #########
