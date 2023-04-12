@@ -48,8 +48,33 @@ def getComputerMove_copycat(board , opponentMove ,dim , diag , choice=None):
             return [nextMove]
     #end if len(opponentMove)==1
     else :
-        pass
-
+        nextMoves = []
+        for k in range(len(opponentMove)):
+            # 1. find row
+            row = 0
+            i=1
+            while i <= dim:
+                if opponentMove[k] < i*dim:
+                    row = i
+                    break
+                i+=1
+            #end while
+            # 2. find position in row
+            column = opponentMove[k]%dim
+            # 3. find symmetric move
+            nextMoves.append((dim-row)*dim + (dim-column+1))
+        for k in nextMoves :
+            # check if valid
+            if table[k] == 'G' or table[k] == 'R':#if no valid go with another strategy
+                if random.randint(0,1)==0:
+                    #go first fit
+                    return getComputerMove_firstfit(board , dim , diag , choice=None, max=len(opponentMove))
+                else:
+                    #go randomly
+                    return getComputerMove_random(board , dim , diag , choice=None, max=len(opponentMove))
+        #endfor
+        # choices are valid , return
+        return nextMoves
 # first fit moves
 getComputerMove_firstfit(board , dim , diag , choice=None, max=None):
     cell_choice = []
