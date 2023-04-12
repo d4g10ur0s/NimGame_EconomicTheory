@@ -7,31 +7,48 @@ import random
 ############################### MY CODE ###############################
 def getComputerMove_copycat(board , opponentMove ,dim , diag , choice=None):
     cell_choice = []
-    if len(opponentMove)==0 :# it is possible that choice is in diag
+    if len(opponentMove)==1 :# it is possible that choice is in diag
+        nextMove = None
         if opponentMove[0] in diag :
             #N-k +1 --> opponentMove - dim - 1
-            nextMove = None
             i=0
             while i < dim:
                 if opponentMove[0]==diag[i] :
                     nextMove = diag[len(diag)-(i+1)]# N - positionInDiag
-                    # check if valid
-                    if table[nextMove] == 'G' or table[nextMove] == 'R':
-                        nextMove = None# not valid
                     break
                 i+=1
             #endwhile
-            # Case 1 : nextMove is not Valid
-            if nextMove==None:
-                if random.randint(0,1)==0:
-                    #go first fit
-                    return getComputerMove_firstfit(board , dim , diag , choice=None, max=len(opponentMove))
-                else:
-                    #go randomly
-                    return getComputerMove_random(board , dim , diag , choice=None, max=len(opponentMove))
-            # Case 2 : nextMove is valid
+        else:
+            # 1. find row
+            row = 0
+            i=1
+            while i <= dim:
+                if opponentMove[0] < i*dim:
+                    row = i
+                    break
+                i+=1
+            #end while
+            # 2. find position in row
+            column = opponentMove[0]%dim
+            # 3. find symmetric move
+            nextMove = (dim-row)*dim + (dim-column+1)
+        # check if valid
+        if table[nextMove] == 'G' or table[nextMove] == 'R':
+            nextMove = None# not valid
+        # Case 1 : nextMove is not Valid
+        if nextMove==None:
+            if random.randint(0,1)==0:
+                #go first fit
+                return getComputerMove_firstfit(board , dim , diag , choice=None, max=len(opponentMove))
             else:
-                return [nextMove]
+                #go randomly
+                return getComputerMove_random(board , dim , diag , choice=None, max=len(opponentMove))
+        # Case 2 : nextMove is valid
+        else:
+            return [nextMove]
+    #end if len(opponentMove)==1
+    else :
+        pass
 
 # first fit moves
 getComputerMove_firstfit(board , dim , diag , choice=None, max=None):
