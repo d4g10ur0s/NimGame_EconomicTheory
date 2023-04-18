@@ -7,6 +7,7 @@ import random
 ############################### MY CODE ###############################
 def getMoreMoves(table,cell_choice,dim,diag,max=0):
     # Choose by row
+    print(str(diag))
     if random.randint(0,1)==0 and not(max==1):
         print("choose by row")
         while random.randint(0,1)==1 and len(cell_choice)<3 and (not (max==0) or not (len(cell_choice)==max)):#random number of choices
@@ -37,7 +38,7 @@ def getMoreMoves(table,cell_choice,dim,diag,max=0):
                 else:# to 2o keli
                     cell_choice.append(cell_choice[0]-1)
             if table[cell_choice[len(cell_choice)-1]] == 'G' or table[cell_choice[len(cell_choice)-1]] == 'R' or cell_choice[len(cell_choice)-1] > dim*dim or cell_choice[len(cell_choice)-1] < 1 or cell_choice[len(cell_choice)-1] in diag:
-                cell_choice = cell_choice[:len(cell_choice)-1]
+                cell_choice.pop(len(cell_choice)-1)
         #end while
     # Choose by column
     elif not(max==1) :
@@ -70,7 +71,7 @@ def getMoreMoves(table,cell_choice,dim,diag,max=0):
                 else:# to 2o keli
                     cell_choice.append(cell_choice[0]-dim)
             if table[cell_choice[len(cell_choice)-1]] == 'G' or table[cell_choice[len(cell_choice)-1]] == 'R' or cell_choice[len(cell_choice)-1] > dim*dim or cell_choice[len(cell_choice)-1] < 1 or cell_choice[len(cell_choice)-1] in diag:
-                cell_choice = cell_choice[:len(cell_choice)-1]
+                cell_choice.pop(len(cell_choice)-1)
         #end while
     return cell_choice
 
@@ -145,7 +146,7 @@ def getComputerMove_copycat(board , opponentMove ,dim , diag , choice=None):
         # choices are valid , return
         return nextMoves
 # first fit moves
-def getComputerMove_firstfit(table , dim , diag , choice=None, max=None):
+def getComputerMove_firstfit(table ,color, dim , diag , choice=None, max=None):
     cell_choice = []
     # 8a koitaksei kata sthles h kata grammes ?
     # by row
@@ -182,14 +183,15 @@ def getComputerMove_firstfit(table , dim , diag , choice=None, max=None):
     # First Fit Choice in chosen cell
     # Case 1 : chosen cell in diag
     if cell_choice[0] in diag :
-        return cell_choice
+        pass
     # Case 2 : chosen cell not in diag , search by rows or columns
     elif random.randint(0,1)==0:# do more choices
-        getMoreMoves(table,cell_choice,dim,diag,max)
-    return cell_choice
-
+        getMoreMoves(table,cell_choice,dim,diag,max=0)
+    for i in cell_choice :
+        table[i]=color
+        table[0]+=1
 # random moves
-def getComputerMove_random(table , dim , diag , choice=None, max=None):
+def getComputerMove_random(table , color, dim , diag , choice=None, max=None):
     cell_choice = []
     # Case 1
     # There is no winning move ???
@@ -205,101 +207,27 @@ def getComputerMove_random(table , dim , diag , choice=None, max=None):
         # Case 1
         # chosen cell in diag
         if cell_choice[0] in diag :
-            print(str(cell_choice))
-            return cell_choice
+            pass
         # Case 2
         # do more choices
         elif random.randint(0,1)==0:
             getMoreMoves(table,cell_choice,dim,diag,max)
-        return cell_choice
-
-def getChoice(toChoose):
-    # Case 1
-    # There are more than 2 choices
-    if len(toChoose) > 1:
-        # choose randomly between two rows
-        return toChoose[random.randint(0,len(toChoose))]
-    # Case 2
-    # There are only two choices
-    else:
-        return toChoose[0]
-def check4WinRound(board ,diag ,n):
-    # check rows
-    rows = []
-    for i in range(n):
-        c=0
-        for j in range(n):
-            if table[i+1+j] == 'G' or table[i+1+j] == 'R':
-                pass
-            else:
-                c+=1
-        rows.append(c)
-    candidate_rows = []
-    for i in range(n):
-        for j in range(i+1,n):
-            if rows[i]==rows[j]:
-                candidate_rows.append((i,i+1))
-            else:
-                pass
-    # check columns
-    cols = []
-    for i in range(n):
-        c=0
-        for j in range(n):
-            if table[i+1+j*n] == 'G' or table[i-1+j*n] == 'R':
-                pass
-            else:
-                c+=1
-        cols.append(c)
-    candidate_cols = []
-    for i in range(n):
-        for j in range(i+1,n):
-            if cols[i]==cols[j]:
-                candidate_cols.append((i,i+1))
-            else:
-                pass
-    # Case 1
-    # There are both rows and cols
-    if len(candidate_cols) > 0 and len(candidate_rows) > 0:
-        # choose randomly between rows and cols
-        if random.randint(0,1) == 0:#choose rows
-            choice = getChoice(candidate_rows)
-        else:#cols are chosen
-            choice = getChoice(candidate_cols)
-    # Case 2
-    # There are only rows
-    elif len(candidate_cols) > 0 :
-        choice = getChoice(candidate_cols)
-    # Case 3
-    # There are only cols
-    elif len(candidate_rows) > 0 :
-        choice = getChoice(candidate_rows)
-    # Case 4
-    # There are neither cols nor rows
-    else:
-        ''' ? '''
-        # epilogh anamesa se random , first-fit , copycat
-        pass
-
-def discardChoice(chosenNumbers,chosen):
-    if input("Do you want to clear? \n(y/n)")=='y' :
-        chosenNumbers = []
-    else:# player discards choice
-        if chosen == 2 :
-            chosenNumbers = [chosenNumbers[0]]
-        else:
-            chosenNumbers = chosenNumbers[:chosen]
+    print(str(cell_choice))
+    for i in cell_choice :
+        table[i]=color
+        table[0]+=1
+#diagonal elements
 def getDiag(table,dim):
     diag = []
     for i in range(dim):
         diag.append(int(table[(i+dim*i)+1]))
     return diag
+#player input
 def playerInput(table, color, dim, diag):
     submit = False
     row = False
     chosen = 0
     chosenNumbers = []
-
     while not submit :
         try :
             a = input("Choose a valid Cell :")
@@ -310,8 +238,10 @@ def playerInput(table, color, dim, diag):
             #choose more numbers
             chosenNumbers.append(int(a))
             chosen=len(chosenNumbers)
+            #is choice valid ?
             if int(chosenNumbers[chosen-1]) > dim*dim or chosenNumbers[chosen-1] == 'G' or chosenNumbers[chosen-1] == 'R' or int(chosenNumbers[chosen-1]) < 1:
                 raise ValueError
+            #choice was valid
             if chosenNumbers[chosen-1] in diag :# chosen cell is in diag
                 if len(chosenNumbers)==1:# 1st cell is in diag
                     print("You have chosen a cell in the diag. \nYou can\'t choose another cell.")
@@ -324,14 +254,15 @@ def playerInput(table, color, dim, diag):
                     print("You have chosen a cell in the diag. \nThis is not a valid choice.")
                     chosenNumbers=[]
                     chosen=0
-            else:
+            else:#chosen cell not in diag , make another choice
                 if chosen > 1:
                     if chosen == 2 :# 2nd cell was chosen
-                        if abs(chosenNumbers[0]-chosenNumbers[1]) == 1 :
+                        if abs(chosenNumbers[0]-chosenNumbers[1]) == 1 or abs(chosenNumbers[0]-chosenNumbers[1]) == 1:
                             row = True
-                        elif abs(chosenNumbers[0]-chosenNumbers[1]) == dim :
+                        elif abs(chosenNumbers[0]-chosenNumbers[1]) == dim or abs(chosenNumbers[0]-chosenNumbers[1]) == 2*dim:
                             row = False
                         else:# player discards choice
+                            print("Invalid Choice")
                             chosenNumbers=[]
                             chosen=0
                     else:# 3rd cell was chosen
@@ -352,6 +283,7 @@ def playerInput(table, color, dim, diag):
     #select the cells
     for i in chosenNumbers:
         table[i] = color
+        table[0]+=1
     return chosenNumbers
 ############################### MY CODE ###############################
 ############################### FG COLOR DEFINITIONS ###############################
@@ -629,23 +561,15 @@ while playNewGameFlag:
             if turn == 'computer':# computer turn
                 turn='player'
                 playerMove = playerInput(nimBoard, playerLetter, N, diag)
-                nimBoard[0]+=len(playerMove)
             else:# player turn
                 turn='computer'
                 move = None
                 if computerStrategy == "random":
-                    move = getComputerMove_random(nimBoard,N,diag)
+                    getComputerMove_random(nimBoard,computerLetter,N,diag)
                 elif computerStrategy == "first free":
-                    move = getComputerMove_firstfit(nimBoard , N , diag , choice=None, max=len(playerMove))
+                    getComputerMove_firstfit(nimBoard , computerLetter,N , diag , choice=None, max=len(playerMove))
                 else:
                     move = getComputerMove_copycat(nimBoard , playerMove ,N , diag , choice=None)
-                if isinstance(move, list):
-                    for i in move :
-                        nimBoard[i] = computerLetter
-                        nimBoard[0]+=1
-                else:
-                    nimBoard[move] = computerLetter
-                    nimBoard[0]+=1
             drawNimPalette(nimBoard,N)
             if nimBoard[0] == N*N :
                 if turn=='computer':
