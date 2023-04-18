@@ -5,12 +5,12 @@ import random
 import os
 import random
 ############################### MY CODE ###############################
-def getMoreMoves(table,cell_choice,dim,diag,max=0):
+def getMoreMoves(table,cell_choice,dim,diag):
     # Choose by row
     print(str(diag))
-    if random.randint(0,1)==0 and not(max==1):
+    if random.randint(0,1)==0:
         print("choose by row")
-        while random.randint(0,1)==1 and len(cell_choice)<3 and (not (max==0) or not (len(cell_choice)==max)):#random number of choices
+        while random.randint(0,1)==1 and len(cell_choice)<3:#random number of choices
             # goRight
             if random.randint(0,1)==0:
                 if cell_choice[0]%dim == 0:# eimai sto teleutaio cell apo deksia
@@ -43,7 +43,7 @@ def getMoreMoves(table,cell_choice,dim,diag,max=0):
     # Choose by column
     elif not(max==1) :
         print("choose by column")
-        while random.randint(0,1)==1 and len(cell_choice)<3 and (not (max==0) or not (len(cell_choice)==max)):#random number of choices
+        while random.randint(0,1)==1 and len(cell_choice)<3:#random number of choices
             # goDown
             if random.randint(0,1)==0:
                 if cell_choice[0]-dim*dim < 0:# eimai sto teleutaio cell apo panw
@@ -75,8 +75,9 @@ def getMoreMoves(table,cell_choice,dim,diag,max=0):
         #end while
     return cell_choice
 
-def getComputerMove_copycat(board , opponentMove ,dim , diag , choice=None):
+def getComputerMove_copycat(table , opponentMove, color ,dim , diag , choice=None):
     cell_choice = []
+    print(str(opponentMove))
     if len(opponentMove)==1 :# it is possible that choice is in diag
         nextMove = None
         if opponentMove[0] in diag :
@@ -109,13 +110,14 @@ def getComputerMove_copycat(board , opponentMove ,dim , diag , choice=None):
         if nextMove==None:
             if random.randint(0,1)==0:
                 #go first fit
-                return getComputerMove_firstfit(board , dim , diag , choice=None, max=len(opponentMove))
+                getComputerMove_firstfit(table , color,dim , diag , choice=None, max=len(opponentMove))
             else:
                 #go randomly
-                return getComputerMove_random(board , dim , diag , choice=None, max=len(opponentMove))
+                getComputerMove_random(table , color,dim , diag , choice=None, max=len(opponentMove))
         # Case 2 : nextMove is valid
         else:
-            return [nextMove]
+            table[nextMove]=color
+            table[0]+=1
     #end if len(opponentMove)==1
     else :
         nextMoves = []
@@ -144,7 +146,9 @@ def getComputerMove_copycat(board , opponentMove ,dim , diag , choice=None):
                     return getComputerMove_random(board , dim , diag , choice=None, max=len(opponentMove))
         #endfor
         # choices are valid , return
-        return nextMoves
+        for i in nextMoves :
+            table[i]=color
+            table[0]+=1
 # first fit moves
 def getComputerMove_firstfit(table ,color, dim , diag , choice=None, max=None):
     cell_choice = []
@@ -182,11 +186,11 @@ def getComputerMove_firstfit(table ,color, dim , diag , choice=None, max=None):
         #endwhile i
     # First Fit Choice in chosen cell
     # Case 1 : chosen cell in diag
-    if cell_choice[0] in diag :
+    if cell_choice[0] in diag or max==1:
         pass
     # Case 2 : chosen cell not in diag , search by rows or columns
     elif random.randint(0,1)==0:# do more choices
-        getMoreMoves(table,cell_choice,dim,diag,max=0)
+        getMoreMoves(table,cell_choice,dim,diag)
     for i in cell_choice :
         table[i]=color
         table[0]+=1
@@ -206,13 +210,12 @@ def getComputerMove_random(table , color, dim , diag , choice=None, max=None):
         #end while
         # Case 1
         # chosen cell in diag
-        if cell_choice[0] in diag :
+        if cell_choice[0] in diag or max==1:
             pass
         # Case 2
         # do more choices
         elif random.randint(0,1)==0:
-            getMoreMoves(table,cell_choice,dim,diag,max)
-    print(str(cell_choice))
+            getMoreMoves(table,cell_choice,dim,diag)
     for i in cell_choice :
         table[i]=color
         table[0]+=1
@@ -556,20 +559,22 @@ while playNewGameFlag:
         drawNimPalette(nimBoard,N)
         diag = getDiag(nimBoard,N)
         # My code
+        playerMove = []
         while 1 :
-            playerMove = []
             if turn == 'computer':# computer turn
                 turn='player'
                 playerMove = playerInput(nimBoard, playerLetter, N, diag)
+                print(str(playerMove))
             else:# player turn
                 turn='computer'
                 move = None
                 if computerStrategy == "random":
-                    getComputerMove_random(nimBoard,computerLetter,N,diag)
+                    getComputerMove_random(nimBoard,computerLetter,N,diag,max=0)
                 elif computerStrategy == "first free":
                     getComputerMove_firstfit(nimBoard , computerLetter,N , diag , choice=None, max=len(playerMove))
                 else:
-                    move = getComputerMove_copycat(nimBoard , playerMove ,N , diag , choice=None)
+                    move = getComputerMove_copycat(nimBoard , playerMove,computerLetter ,N , diag , choice=None)
+                    playerMove = []
             drawNimPalette(nimBoard,N)
             if nimBoard[0] == N*N :
                 if turn=='computer':
